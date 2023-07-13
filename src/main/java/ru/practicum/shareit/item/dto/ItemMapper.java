@@ -9,7 +9,7 @@ public class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getIsAvailable());
+                item.getAvailable());
     }
 
     public static Item toItem(ItemDto itemDto) {
@@ -17,7 +17,7 @@ public class ItemMapper {
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .isAvailable(itemDto.getIsAvailable())
+                .available(itemDto.getAvailable())
                 .build();
     }
 }

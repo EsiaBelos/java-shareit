@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
@@ -22,7 +23,7 @@ public class Item {
 
     private String description;
 
-    private Boolean isAvailable;
+    private Boolean available;
 
     private User owner;
 

@@ -18,8 +18,8 @@ public class ErrorHandler {
                 .body(new ErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorMessage> handleUserNotFound(final UserNotFoundException e) {
+    @ExceptionHandler({UserNotFoundException.class,ItemNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handleUserNotFound(final RuntimeException e) {
         log.debug(e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
