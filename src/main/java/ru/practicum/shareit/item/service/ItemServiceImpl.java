@@ -28,7 +28,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItems(long userId) {
-        return null;
+        userStorage.getUserById(userId);
+        return itemStorage.getItems(userId);
     }
 
     @Override
@@ -39,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(long userId, String text) {
-        return null;
+        userStorage.getUserById(userId);
+        return itemStorage.searchItems(text);
     }
 }

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.UserNotFoundException;
@@ -8,8 +9,10 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, List<Item>> items = new HashMap<>();
 
@@ -26,30 +29,44 @@ public class ItemStorageImpl implements ItemStorage {
             userItems.add(item);
             return userItems;
         });
+        log.debug("Item created id {}", item.getId());
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto updateItem(long userId, ItemDto itemDto, long itemId) {
         if (items.containsKey(userId)) {
-            Item itemInStore = items.get(userId).stream()
+            Optional<Item> itemInStore = items.get(userId).stream()
                     .filter(item -> item.getId().equals(itemId))
-                    .findFirst()
-                    .get();
-            Item itemUpdated = ItemUtil.test(itemInStore, itemDto);
-            items.compute(userId, (user, userItems) -> {
-                userItems.remove(itemInStore);
-                userItems.add(itemUpdated);
-                return userItems;
-            });
-            return ItemMapper.toItemDto(itemUpdated);
+                    .findFirst();
+            if (itemInStore.isPresent()) {
+                Item itemUpdated = ItemUtil.test(itemInStore.get(), itemDto);
+                items.compute(userId, (user, userItems) -> {
+                    userItems.remove(itemInStore.get());
+                    userItems.add(itemUpdated);
+                    return userItems;
+                });
+                log.debug("Item updated id {}", itemId);
+                return ItemMapper.toItemDto(itemUpdated);
+            }
+            throw new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId));
         }
         throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
     }
 
     @Override
     public List<ItemDto> getItems(long userId) {
-        return null;
+        if (items.containsKey(userId)) {
+            List<Item> itemsInStore = items.get(userId);
+            if (!itemsInStore.isEmpty()) {
+                List<ItemDto> userItems = itemsInStore.stream()
+                        .map(ItemMapper::toItemDto)
+                        .collect(Collectors.toList());
+                return userItems;
+            }
+            return Collections.emptyList();
+        }
+        throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
     }
 
     @Override
@@ -68,8 +85,23 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public List<ItemDto> searchItems(long userId, String text) {
-        return null;
+    public List<ItemDto> searchItems(String text) {
+        List<ItemDto> result = new ArrayList<>();
+        if (!text.isBlank()) {
+            for (List<Item> itemsInStore : items.values()) {
+                if (!itemsInStore.isEmpty()) {
+                    List<ItemDto> foundItems = itemsInStore.stream()
+                            .filter(Item::getAvailable)
+                            .filter(item ->
+                                    item.getName().toLowerCase().contains(text.toLowerCase())
+                                            || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                            .map(ItemMapper::toItemDto)
+                            .collect(Collectors.toList());
+                    result.addAll(foundItems);
+                }
+            }
+        }
+        return result;
     }
 
     private Long getId() {
