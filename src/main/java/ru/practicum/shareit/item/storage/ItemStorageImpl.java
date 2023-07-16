@@ -14,14 +14,15 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ItemStorageImpl implements ItemStorage {
-    private final Map<Long, List<Item>> items = new HashMap<>();
-
+    private final Map<Long, List<Item>> items = new LinkedHashMap<>();
+    private final Map<Long, Item> storage = new LinkedHashMap<>();
     private Long id = 0L;
 
     @Override
     public ItemDto addItem(long userId, ItemDto itemDto) {
         Item item = ItemMapper.toItem(itemDto);
         item.setId(getId());
+        storage.put(item.getId(), item);
         if (!items.containsKey(userId)) {
             items.put(userId, new ArrayList<>());
         }
@@ -35,23 +36,21 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public ItemDto updateItem(long userId, ItemDto itemDto, long itemId) {
-        if (items.containsKey(userId)) {
-            Optional<Item> itemInStore = items.get(userId).stream()
-                    .filter(item -> item.getId().equals(itemId))
-                    .findFirst();
-            if (itemInStore.isPresent()) {
-                Item itemUpdated = ItemUtil.test(itemInStore.get(), itemDto);
-                items.compute(userId, (user, userItems) -> {
-                    userItems.remove(itemInStore.get());
+        if (storage.containsKey(itemId) && items.containsKey(userId)) {
+            Item itemInStore = storage.get(itemId);
+            Item itemUpdated = ItemUtil.test(itemInStore, itemDto);
+            storage.put(itemId, itemUpdated);
+            items.compute(userId, (user, userItems) -> {
+                if (userItems.contains(itemInStore)) {
+                    userItems.remove(itemInStore);
                     userItems.add(itemUpdated);
-                    return userItems;
-                });
-                log.debug("Item updated id {}", itemId);
-                return ItemMapper.toItemDto(itemUpdated);
-            }
-            throw new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId));
+                }
+                return userItems;
+            });
+            log.debug("Item updated id {}", itemId);
+            return ItemMapper.toItemDto(itemUpdated);
         }
-        throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
+        throw new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId));
     }
 
     @Override
@@ -71,38 +70,25 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public ItemDto getItemById(Long itemId) {
-        Optional<ItemDto> itemDto = Optional.empty();
-        for (List<Item> itemsInStore : items.values()) {
-            itemDto = itemsInStore.stream()
-                    .filter(item -> item.getId().equals(itemId))
-                    .map(ItemMapper::toItemDto)
-                    .findFirst();
-        }
-        if (itemDto.isPresent()) {
-            return itemDto.get();
+        if (storage.containsKey(itemId)) {
+            return ItemMapper.toItemDto(storage.get(itemId));
         }
         throw new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId));
     }
 
     @Override
     public List<ItemDto> searchItems(String text) {
-        List<ItemDto> result = new ArrayList<>();
-        if (!text.isBlank()) {
-            for (List<Item> itemsInStore : items.values()) {
-                if (!itemsInStore.isEmpty()) {
-                    List<ItemDto> foundItems = itemsInStore.stream()
-                            .filter(Item::getAvailable)
-                            .filter(item ->
-                                    item.getName().toLowerCase().contains(text.toLowerCase())
-                                            || item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                            .map(ItemMapper::toItemDto)
-                            .collect(Collectors.toList());
-                    result.addAll(foundItems);
-                }
-            }
+        if (text.isBlank()) {
+            return Collections.emptyList();
         }
-        return result;
+        return storage.values().stream()
+                .filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
+
 
     private Long getId() {
         return ++id;
