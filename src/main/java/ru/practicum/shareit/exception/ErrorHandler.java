@@ -19,10 +19,18 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({UserNotFoundException.class, ItemNotFoundException.class})
-    public ResponseEntity<ErrorMessage> handleUserNotFound(final RuntimeException e) {
+    public ResponseEntity<ErrorMessage> handleNotFound(final RuntimeException e) {
         log.debug(e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorMessage> handleInvalidOwner(final InvalidOwnerException e) {
+        log.debug(e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(new ErrorMessage(e.getMessage()));
     }
 }

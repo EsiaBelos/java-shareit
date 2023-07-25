@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, List<Item>> items = new LinkedHashMap<>();

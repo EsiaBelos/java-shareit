@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
 public class UserStorageImpl implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
