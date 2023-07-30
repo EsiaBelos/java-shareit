@@ -15,7 +15,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "requests")
 @NoArgsConstructor
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class ItemRequest {
 
     @Id

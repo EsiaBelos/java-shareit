@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.EmailException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.user.User;

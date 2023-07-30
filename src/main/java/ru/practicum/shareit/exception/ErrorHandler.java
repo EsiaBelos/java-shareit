@@ -18,7 +18,8 @@ public class ErrorHandler {
                 .body(new ErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler({UserNotFoundException.class, ItemNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, ItemNotFoundException.class, BookingNotFoundException.class,
+            AccessDeniedException.class})
     public ResponseEntity<ErrorMessage> handleNotFound(final RuntimeException e) {
         log.debug(e.getMessage());
         return ResponseEntity
@@ -26,11 +27,11 @@ public class ErrorHandler {
                 .body(new ErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorMessage> handleInvalidOwner(final InvalidOwnerException e) {
+    @ExceptionHandler({UnsupportedStateException.class, InvalidBookingDtoException.class, IllegalArgumentException.class})
+    public ResponseEntity<ErrorMessage> handleBadRequest(final IllegalArgumentException e) {
         log.debug(e.getMessage());
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorMessage(e.getMessage()));
     }
 }
