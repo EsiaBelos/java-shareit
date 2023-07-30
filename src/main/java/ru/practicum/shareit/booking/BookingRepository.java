@@ -30,7 +30,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> findAllFuture(Long id, LocalDateTime now);
 
-    List<Booking> findAllByBooker_IdAndStatusOrderByStartDesc(Long booker_id, Status status);
+    List<Booking> findAllByBooker_IdAndStatusOrderByStartDesc(Long bookerId, Status status);
 
     List<Booking> findAllByItem_IdInOrderByStartDesc(List<Long> itemIds);
 
