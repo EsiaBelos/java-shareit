@@ -2,12 +2,14 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b " +
@@ -67,4 +69,26 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "and b.start >= ?3 " +
             "order by b.start")
     List<Booking> findNextBooking(long itemId, Status status, LocalDateTime now);
+
+    @Query(value = "WITH cte AS (SELECT *, " +
+            "ROW_NUMBER() over (partition by item_id order by start_date desc) as rn " +
+            "FROM public.bookings b " +
+            "where b.item_id in :items " +
+            "and b.status = :status " +
+            "and b.start_date <= :date) " +
+            "SELECT  * FROM cte WHERE rn = 1;", nativeQuery = true)
+    List<Booking> findLastBookingList(@Param("items") Set<Long> items,
+                                      @Param("status") String status,
+                                      @Param("date") LocalDateTime now);
+
+    @Query(value = "WITH cte AS (SELECT *, " +
+            "ROW_NUMBER() over (partition by item_id order by start_date) as rn " +
+            "FROM public.bookings b " +
+            "where b.item_id in :items " +
+            "and b.status = :status " +
+            "and b.start_date >= :date) " +
+            "SELECT  * FROM cte WHERE rn = 1;", nativeQuery = true)
+    List<Booking> findNextBookingList(@Param("items") Set<Long> items,
+                                      @Param("status") String status,
+                                      @Param("date") LocalDateTime now);
 }

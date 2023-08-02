@@ -21,6 +21,8 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,17 +74,25 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemCommentBookingDto> getItems(long ownerId) { //только владелец
         checkUser(ownerId);
-        List<Item> items = repository.findAllByOwner_IdOrderById(ownerId);
-        if (items.isEmpty()) {
+        List<Item> itemList = repository.findAllByOwner_IdOrderById(ownerId);
+        if (itemList.isEmpty()) {
             return Collections.emptyList();
         }
-        return items.stream().map(item -> {
-                    ItemCommentBookingDto dto = ItemMapper.toItemCommentBookingDto(item, getNextBooking(item.getId()),
-                            getLastBooking(item.getId()));
-                    dto.getComments().addAll(getComments(item.getId()));
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        Map<Long, Item> itemMap = itemList.stream().collect(Collectors.toMap(Item::getId, Function.identity()));
+
+        List<Booking> lastBookinglist =
+                bookingRepository.findLastBookingList(itemMap.keySet(), Status.APPROVED.toString(), LocalDateTime.now());
+        Map<Long, Booking> lastBookingMap = lastBookinglist.stream().collect(Collectors.toMap(
+                booking -> booking.getItem().getId(), Function.identity()));
+
+        List<Booking> nextBookingList =
+                bookingRepository.findNextBookingList(itemMap.keySet(), Status.APPROVED.toString(), LocalDateTime.now());
+        Map<Long, Booking> nextBookingMap = nextBookingList.stream().collect(Collectors.toMap(
+                booking -> booking.getItem().getId(), Function.identity()));
+
+        return itemList.stream().map(item ->
+                        ItemMapper.toItemCommentBookingDto(item, nextBookingMap.get(item.getId()), lastBookingMap.get(item.getId())))
+                        .collect(Collectors.toList());
     }
 
     @Override

@@ -63,9 +63,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<OutcomingBookingDto> getBookings(long userId, String state) { //Получение списка всех бронирований текущего пользователя
+    public List<OutcomingBookingDto> getBookings(long userId, State stateEnum) { //Получение списка всех бронирований текущего пользователя
         checkUser(userId);
-        State stateEnum = checkState(state);
         List<Booking> bookings = new ArrayList<>();
         switch (stateEnum) {
             case ALL:
@@ -93,13 +92,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<OutcomingBookingDto> getBookingsForOwnedItems(long userId, String state) { //Получение списка бронирований для всех вещей текущего пользователя хотя бы 1 вещь
+    public List<OutcomingBookingDto> getBookingsForOwnedItems(long userId, State stateEnum) { //Получение списка бронирований для всех вещей текущего пользователя хотя бы 1 вещь
         checkUser(userId);
         List<Long> itemIds = itemRepository.findItemIds(userId);
         if (itemIds.isEmpty()) {
             return Collections.emptyList();
         }
-        State stateEnum = checkState(state);
         List<Booking> bookings = new ArrayList<>();
         switch (stateEnum) {
             case ALL:
@@ -124,15 +122,6 @@ public class BookingServiceImpl implements BookingService {
         return bookings.stream()
                 .map(BookingMapper::toOutcomingBookingDto)
                 .collect(Collectors.toList());
-    }
-
-    private State checkState(String state) {
-        try {
-            State stateEnum = State.valueOf(state);
-            return stateEnum;
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedStateException(String.format("Unknown state: %s", state));
-        }
     }
 
     @Override
