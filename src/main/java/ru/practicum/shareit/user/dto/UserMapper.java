@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.dto.OutcomingBookingDto;
 import ru.practicum.shareit.user.User;
 
 @UtilityClass
@@ -20,5 +21,9 @@ public class UserMapper {
                 .email(userDto.getEmail())
                 .name(userDto.getName())
                 .build();
+    }
+
+    public OutcomingBookingDto.BookerDto toBookerDto(User user) {
+        return new OutcomingBookingDto.BookerDto(user.getId());
     }
 }

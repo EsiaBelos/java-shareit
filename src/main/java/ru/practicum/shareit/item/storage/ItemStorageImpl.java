@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -11,7 +10,6 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, List<Item>> items = new LinkedHashMap<>();

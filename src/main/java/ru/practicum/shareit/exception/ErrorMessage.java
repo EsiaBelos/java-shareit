@@ -1,13 +1,13 @@
 package ru.practicum.shareit.exception;
 
 public class ErrorMessage {
-    private final String message;
+    private final String error;
 
     public ErrorMessage(String message) {
-        this.message = message;
+        this.error = message;
     }
 
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 }
