@@ -20,7 +20,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({UserNotFoundException.class, ItemNotFoundException.class, BookingNotFoundException.class,
-            AccessDeniedException.class})
+            AccessDeniedException.class, RequestNotFoundException.class})
     public ResponseEntity<ErrorMessage> handleNotFound(final RuntimeException e) {
         log.debug(e.getMessage());
         return ResponseEntity

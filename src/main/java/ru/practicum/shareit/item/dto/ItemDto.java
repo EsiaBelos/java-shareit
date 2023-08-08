@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.validation.annotation.Validated;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
+@Builder
 @Getter
 @Validated
 public class ItemDto {
@@ -22,4 +24,6 @@ public class ItemDto {
 
     @NotNull
     private Boolean available;
+
+    private Long requestId;
 }

@@ -1,22 +1,18 @@
 package ru.practicum.shareit.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-
-/**
- * TODO Sprint add-item-requests.
- */
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "requests")
 @NoArgsConstructor
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @ToString
 public class ItemRequest {
 
@@ -25,9 +21,22 @@ public class ItemRequest {
     private Long id;
 
     private String description;
+    private LocalDateTime created;
 
     @ManyToOne
     @JoinColumn(name = "requestor_id")
     private User requestor;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemRequest that = (ItemRequest) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

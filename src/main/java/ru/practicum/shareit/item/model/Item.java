@@ -28,7 +28,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User owner;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "request_id")

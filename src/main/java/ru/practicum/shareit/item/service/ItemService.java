@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.service;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemCommentBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.RequestCommentDto;
+import ru.practicum.shareit.item.dto.InCommentDto;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface ItemService {
 
     List<ItemDto> searchItems(long userId, String text);
 
-    CommentDto addComment(long userId, long itemId, RequestCommentDto commentDto);
+    CommentDto addComment(long userId, long itemId, InCommentDto commentDto);
 }

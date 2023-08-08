@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,39 +15,37 @@ import java.util.Set;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
-            "and b.start < ?2 and b.end > ?3 " +
-            "order by b.start desc")
-    List<Booking> findAllCurrent(Long id, LocalDateTime now, LocalDateTime now1);
+            "and b.start < ?2 and b.end > ?3")
+    List<Booking> findAllCurrent(Long id, LocalDateTime now, LocalDateTime now1, Pageable pageable);
 
-    List<Booking> findAllByBooker_IdOrderByStartDesc(Long id);
+    List<Booking> findAllByBooker_Id(Long id, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
             "and b.end < ?2 " +
             "order by b.start desc")
-    List<Booking> findAllPast(Long id, LocalDateTime now);
+    List<Booking> findAllPast(Long id, LocalDateTime now, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
             "and b.start > ?2 " +
             "order by b.start desc")
-    List<Booking> findAllFuture(Long id, LocalDateTime now);
+    List<Booking> findAllFuture(Long id, LocalDateTime now, Pageable pageable);
 
-    List<Booking> findAllByBooker_IdAndStatusOrderByStartDesc(Long bookerId, Status status);
+    List<Booking> findAllByBooker_IdAndStatus(Long bookerId, Status status, Pageable pageable);
 
-    List<Booking> findAllByItem_IdInOrderByStartDesc(List<Long> itemIds);
+    List<Booking> findAllByItem_IdIn(List<Long> itemIds, Pageable pageable);
 
     @Query("select b from Booking  b " +
             "where b.item.id in ?1 " +
-            "and b.start < ?2 and b.end > ?3 " +
-            "order by b.start desc")
-    List<Booking> findAllByItem_IdCurrent(List<Long> itemIds, LocalDateTime now, LocalDateTime now1);
+            "and b.start < ?2 and b.end > ?2 ")
+    List<Booking> findAllByItem_IdCurrent(List<Long> itemIds, LocalDateTime now, Pageable pageable);
 
-    List<Booking> findAllByItem_IdInAndEndIsBeforeOrderByStartDesc(List<Long> itemIds, LocalDateTime now);
+    List<Booking> findAllByItem_IdInAndEndIsBefore(List<Long> itemIds, LocalDateTime now, Pageable pageable);
 
-    Collection<Booking> findAllByItem_IdInAndStartIsAfterOrderByStartDesc(List<Long> itemIds, LocalDateTime now);
+    List<Booking> findAllByItem_IdInAndStartIsAfter(List<Long> itemIds, LocalDateTime now, Pageable pageable);
 
-    Collection<Booking> findAllByItemId_IdInAndStatusOrderByStartDesc(List<Long> itemIds, Status status);
+    List<Booking> findAllByItemId_IdInAndStatus(List<Long> itemIds, Status status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 " +

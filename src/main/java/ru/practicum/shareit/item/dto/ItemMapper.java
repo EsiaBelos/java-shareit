@@ -10,11 +10,13 @@ import ru.practicum.shareit.item.model.Item;
 public class ItemMapper {
 
     public ItemDto toItemDto(Item item) {
-        return new ItemDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable());
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
+                .build();
     }
 
     public ItemCommentBookingDto toItemCommentBookingDto(Item item, Booking nextBooking, Booking lastBooking) {
