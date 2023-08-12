@@ -56,12 +56,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto addComment(long userId, long itemId, InCommentDto commentDto) { //пользователь, который брал вещь в аренду, и только после окончания срока аренды
-        User user = checkUser(userId);
-        Item item = repository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId)));
         List<Booking> bookings = bookingRepository.findLastBookingByBooker(itemId, userId, LocalDateTime.now(), Status.APPROVED);
         if (bookings.isEmpty()) {
             throw new IllegalArgumentException(String.format("Пользователь id %d не может оставить комментарий", userId));
         }
+        User user = checkUser(userId);
+        Item item = repository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId)));
         Comment comment = commentRepository.save(Comment.builder()
                 .text(commentDto.getText())
                 .author(user)
@@ -107,8 +107,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public ItemCommentBookingDto getItemById(Long userId, long itemId) {
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public ItemCommentBookingDto getItemById(Long userId, Long itemId) {
         checkUser(userId);
         Item item = repository.findById(itemId).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId)));
