@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,12 @@ public class ItemServiceImpl implements ItemService {
                 new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId)));
         if (itemInstore.getUser().getId() == userId) {
             Item itemUpdated = ItemUtil.test(itemInstore, itemDto);
+            Long requestId = itemDto.getRequestId();
+            if (requestId != null && !Objects.equals(requestId, itemInstore.getRequest().getId())) {
+                ItemRequest request = requestRepository.findById(requestId).orElseThrow(() ->
+                        new RequestNotFoundException(String.format("Реквест не найден %d", requestId)));
+                itemUpdated.setRequest(request);
+            }
             return ItemMapper.toItemDto(repository.save(itemUpdated));
         }
         throw new AccessDeniedException(String.format("Пользователь id = %d не владеет вещью с id %d", userId, itemId));

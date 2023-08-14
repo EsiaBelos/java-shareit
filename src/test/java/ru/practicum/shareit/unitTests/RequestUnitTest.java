@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exception.RequestNotFoundException;
@@ -26,7 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestUnitTest {
@@ -68,6 +67,7 @@ class RequestUnitTest {
 
         assertThrows(UserNotFoundException.class, ()->
                 requestService.addRequest(anyLong(), null));
+        verify(requestRepository, never()).save(request);
     }
 
     @Test
@@ -76,7 +76,8 @@ class RequestUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, ()->
-                requestService.getRequests(anyLong()));
+                requestService.getRequestsByRequestor(anyLong()));
+        verify(requestRepository, never()).findAllByRequestor_IdOrderByCreatedDesc(anyLong());
     }
 
     @Test
@@ -86,7 +87,7 @@ class RequestUnitTest {
         when(requestRepository.findAllByRequestor_IdOrderByCreatedDesc(anyLong()))
                 .thenReturn(Collections.emptyList());
 
-        List<OutRequestDto> dtos = requestService.getRequests(user.getId());
+        List<OutRequestDto> dtos = requestService.getRequestsByRequestor(user.getId());
         assertNotNull(dtos);
         assertEquals(0, dtos.size());
     }
@@ -98,6 +99,7 @@ class RequestUnitTest {
 
         assertThrows(UserNotFoundException.class, ()->
                 requestService.getRequestById(anyLong(), 1L));
+        verify(requestRepository, never()).findById(anyLong());
     }
 
     @Test
@@ -109,6 +111,7 @@ class RequestUnitTest {
 
         assertThrows(RequestNotFoundException.class, ()->
                 requestService.getRequestById(user.getId(), anyLong()));
+        verify(requestRepository, atMostOnce()).findById(anyLong());
     }
 
     @Test
@@ -117,7 +120,8 @@ class RequestUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, ()->
-                requestService.searchAllRequests(anyLong(), 0, 10));
+                requestService.getAllRequests(anyLong(), 0, 10));
+        verify(requestRepository, never()).findAllByRequestor_IdNot(anyLong(), any(Pageable.class));
     }
 
     @Test
@@ -127,7 +131,7 @@ class RequestUnitTest {
         when(requestRepository.findAllByRequestor_IdNot(anyLong(), any(Pageable.class)))
                 .thenReturn(Collections.emptyList());
 
-        List<OutRequestDto> dtos = requestService.searchAllRequests(user.getId(), 0, 10);
+        List<OutRequestDto> dtos = requestService.getAllRequests(user.getId(), 0, 10);
         assertNotNull(dtos);
         assertEquals(0, dtos.size());
     }

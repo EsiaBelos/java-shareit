@@ -15,6 +15,7 @@ import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemCommentBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.item.storage.CommentRepository;
@@ -31,7 +32,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemUnitTest {
@@ -88,7 +89,9 @@ class ItemUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()-> itemService.addItem(anyLong(), null));
+        assertThrows(UserNotFoundException.class, ()->
+                itemService.addItem(anyLong(), null));
+        verify(itemRepository, never()).save(item);
     }
 
     @Test
@@ -96,7 +99,9 @@ class ItemUnitTest {
         when(bookingRepository.findLastBookingByBooker(anyLong(), anyLong(), any(LocalDateTime.class), any(Status.class)))
                 .thenReturn(Collections.emptyList());
 
-        assertThrows(IllegalArgumentException.class, () -> itemService.addComment(1L, 1L, null));
+        assertThrows(IllegalArgumentException.class, () ->
+                itemService.addComment(1L, 1L, null));
+        verify(commentRepository, never()).save(new Comment());
     }
 
     @Test
@@ -104,7 +109,9 @@ class ItemUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ItemNotFoundException.class, () -> itemService.updateItem(1L, null, 1L));
+        assertThrows(ItemNotFoundException.class, () ->
+                itemService.updateItem(1L, null, 1L));
+        verify(itemRepository, never()).save(item);
     }
 
     @Test
@@ -112,7 +119,9 @@ class ItemUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
 
-        assertThrows(AccessDeniedException.class, () -> itemService.updateItem(2L, null, 1L));
+        assertThrows(AccessDeniedException.class, () ->
+                itemService.updateItem(2L, null, 1L));
+        verify(itemRepository, never()).save(item);
     }
 
     @Test
@@ -120,7 +129,9 @@ class ItemUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> itemService.getItemById(anyLong(), 1L));
+        assertThrows(UserNotFoundException.class, () ->
+                itemService.getItemById(anyLong(), 1L));
+        verify(itemRepository, never()).findById(anyLong());
     }
 
     @Test
@@ -130,7 +141,9 @@ class ItemUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(user.getId(), anyLong()));
+        assertThrows(ItemNotFoundException.class, () ->
+                itemService.getItemById(user.getId(), anyLong()));
+        verify(itemRepository, atMostOnce()).findById(anyLong());
     }
 
     @Test
@@ -155,7 +168,9 @@ class ItemUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> itemService.searchItems(anyLong(), null));
+        assertThrows(UserNotFoundException.class, () ->
+                itemService.searchItems(anyLong(), null));
+        verify(itemRepository, never()).searchItems(anyString());
     }
 
     @Test
@@ -166,6 +181,7 @@ class ItemUnitTest {
                 .thenReturn(Collections.emptyList());
 
         List<ItemDto> items = itemService.searchItems(user.getId(), anyString());
+        verify(itemRepository, atMostOnce()).searchItems(anyString());
         assertNotNull(items);
         assertEquals(0, items.size());
     }
@@ -176,6 +192,7 @@ class ItemUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> itemService.getItems(anyLong()));
+        verify(itemRepository, never()).findAllByUserIdOrderById(anyLong());
     }
 
     @Test
@@ -188,6 +205,11 @@ class ItemUnitTest {
         List<ItemCommentBookingDto> items = itemService.getItems(user.getId());
         assertNotNull(items);
         assertEquals(0, items.size());
+        verify(itemRepository, atMostOnce()).findAllByUserIdOrderById(user.getId());
+        verify(bookingRepository, never()).findLastBookingList(anySet(),
+                anyString(), any(LocalDateTime.class));
+        verify(bookingRepository, never()).findNextBookingList(anySet(),
+                anyString(), any(LocalDateTime.class));
     }
 
     @Test

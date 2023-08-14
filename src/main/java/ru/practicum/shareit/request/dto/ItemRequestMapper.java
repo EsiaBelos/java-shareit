@@ -5,6 +5,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @UtilityClass
 public class ItemRequestMapper {
@@ -14,7 +15,7 @@ public class ItemRequestMapper {
         return ItemRequest.builder()
                 .description(requestDto.getDescription())
                 .requestor(user)
-                .created(LocalDateTime.now())
+                .created(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
                 .build();
     }
 

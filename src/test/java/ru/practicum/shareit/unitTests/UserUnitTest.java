@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +50,7 @@ public class UserUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(anyLong()));
+        verify(userRepository, atMostOnce()).delete(new User());
     }
 
     @Test
@@ -58,7 +60,8 @@ public class UserUnitTest {
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(anyLong()));
+        verify(userRepository, atMostOnce()).findById(anyLong());
     }
 
     @Test
@@ -68,7 +71,9 @@ public class UserUnitTest {
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.updateUser(null, 1L));
+        assertThrows(UserNotFoundException.class, () ->
+                userService.updateUser(null, 1L));
+        verify(userRepository, never()).save(new User());
     }
 
 }

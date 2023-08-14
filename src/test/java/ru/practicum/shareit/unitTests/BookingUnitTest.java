@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingUnitTest {
@@ -107,7 +107,9 @@ class BookingUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ItemNotFoundException.class, () -> bookingService.addBooking(user.getId(), bookingDto));
+        assertThrows(ItemNotFoundException.class, () ->
+                bookingService.addBooking(user.getId(), bookingDto));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -117,7 +119,9 @@ class BookingUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
 
-        assertThrows(UserNotFoundException.class, () -> bookingService.addBooking(user.getId(), bookingDto));
+        assertThrows(UserNotFoundException.class, () ->
+                bookingService.addBooking(user.getId(), bookingDto));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -128,7 +132,9 @@ class BookingUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
 
-        assertThrows(InvalidBookingDtoException.class, () -> bookingService.addBooking(anyLong(), bookingDto));
+        assertThrows(InvalidBookingDtoException.class, () ->
+                bookingService.addBooking(anyLong(), bookingDto));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -140,7 +146,9 @@ class BookingUnitTest {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
 
-        assertThrows(InvalidBookingDtoException.class, () -> bookingService.addBooking(anyLong(), bookingDto));
+        assertThrows(InvalidBookingDtoException.class, () ->
+                bookingService.addBooking(anyLong(), bookingDto));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -148,7 +156,9 @@ class BookingUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> bookingService.updateBooking(anyLong(), 1L, true));
+        assertThrows(UserNotFoundException.class, () ->
+                bookingService.updateBooking(anyLong(), 1L, true));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -160,6 +170,7 @@ class BookingUnitTest {
 
         assertThrows(BookingNotFoundException.class, () ->
                 bookingService.updateBooking(user.getId(), anyLong(), true));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -172,6 +183,7 @@ class BookingUnitTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 bookingService.updateBooking(user.getId(), firstBooking.getId(), true));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -184,6 +196,7 @@ class BookingUnitTest {
 
         assertThrows(AccessDeniedException.class, () ->
                 bookingService.updateBooking(user.getId(), secondBooking.getId(), true));
+        verify(bookingRepository, never()).save(firstBooking);
     }
 
     @Test
@@ -193,6 +206,7 @@ class BookingUnitTest {
 
         assertThrows(UserNotFoundException.class, () ->
                 bookingService.getBookings(anyLong(), State.ALL, 0, 10));
+        verify(bookingRepository, never()).findAllByBooker_Id(anyLong(), any(Pageable.class));
     }
 
     @Test
@@ -204,6 +218,7 @@ class BookingUnitTest {
 
         List<OutcomingBookingDto> bookings = bookingService.getBookings(user.getId(),
                 State.ALL, 1, 2);
+        verify(bookingRepository, atMostOnce()).findAllByBooker_Id(anyLong(), any(Pageable.class));
         assertNotNull(bookings);
         assertEquals(0, bookings.size());
     }
@@ -215,6 +230,7 @@ class BookingUnitTest {
 
         assertThrows(UserNotFoundException.class, () ->
                 bookingService.getBookingsForOwnedItems(anyLong(), State.ALL, 0, 10));
+        verify(bookingRepository, never()).findAllByItem_IdIn(anyList(), any(Pageable.class));
     }
 
     @Test
@@ -225,6 +241,7 @@ class BookingUnitTest {
                 .thenReturn(Collections.emptyList());
 
         List<OutcomingBookingDto> dtos = bookingService.getBookingsForOwnedItems(user.getId(), State.ALL, 0, 10);
+        verify(bookingRepository, never()).findAllByItem_IdIn(anyList(), any(Pageable.class));
         assertNotNull(dtos);
         assertEquals(0, dtos.size());
     }
@@ -239,6 +256,7 @@ class BookingUnitTest {
                 .thenReturn(Collections.emptyList());
 
         List<OutcomingBookingDto> dtos = bookingService.getBookingsForOwnedItems(user.getId(), State.ALL, 0, 10);
+        verify(bookingRepository, atMostOnce()).findAllByItem_IdIn(anyList(), any(Pageable.class));
         assertNotNull(dtos);
         assertEquals(0, dtos.size());
     }
@@ -250,6 +268,7 @@ class BookingUnitTest {
 
         assertThrows(UserNotFoundException.class, () ->
                 bookingService.getBooking(anyLong(), 1L));
+        verify(bookingRepository, never()).findById(anyLong());
     }
 
     @Test
@@ -261,6 +280,7 @@ class BookingUnitTest {
 
         assertThrows(BookingNotFoundException.class, () ->
                 bookingService.getBooking(user.getId(), anyLong()));
+        verify(bookingRepository, atMostOnce()).findById(anyLong());
     }
 
     @Test
@@ -272,5 +292,6 @@ class BookingUnitTest {
 
         assertThrows(AccessDeniedException.class, () ->
                 bookingService.getBooking(user.getId(), firstBooking.getId()));
+        verify(bookingRepository, atMostOnce()).findById(anyLong());
     }
 }

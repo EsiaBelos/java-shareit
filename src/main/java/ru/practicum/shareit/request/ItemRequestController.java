@@ -27,7 +27,7 @@ public class ItemRequestController {
 //    получить список своих запросов вместе с данными об ответах на них
     @GetMapping
     public List<OutRequestDto> getRequests(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return requestService.getRequests(userId);
+        return requestService.getRequestsByRequestor(userId);
     }
 
     // Посмотреть данные об отдельном запросе может любой пользователь.
@@ -40,6 +40,6 @@ public class ItemRequestController {
     public List<OutRequestDto> searchAllRequests(@RequestHeader("X-Sharer-User-Id") long userId,
                                                  @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                                  @RequestParam(defaultValue = "20") @Min(1) Integer size) {
-        return requestService.searchAllRequests(userId, from, size);
+        return requestService.getAllRequests(userId, from, size);
     }
 }

@@ -15,7 +15,9 @@ import java.util.Set;
 public class OutRequestDto {
 
     private Long id;
+
     private String description;
+
     private LocalDateTime created;
 
     private final Set<ItemDto> items = new HashSet<>();

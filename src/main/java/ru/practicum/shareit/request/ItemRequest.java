@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -21,6 +23,7 @@ public class ItemRequest {
     private Long id;
 
     private String description;
+
     private LocalDateTime created;
 
     @ManyToOne

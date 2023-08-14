@@ -43,7 +43,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<OutRequestDto> getRequests(long userId) { //от более новых к более старым
+    public List<OutRequestDto> getRequestsByRequestor(long userId) { //от более новых к более старым
         checkUser(userId);
         List<ItemRequest> requestList = requestRepository.findAllByRequestor_IdOrderByCreatedDesc(userId);
         if (requestList.isEmpty()) {
@@ -64,9 +64,9 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<OutRequestDto> searchAllRequests(long userId, Integer from, Integer size) {
+    public List<OutRequestDto> getAllRequests(long userId, Integer from, Integer size) {
         checkUser(userId);
-        Pageable sortedByCreated = PageRequest.of(from / size, size, Sort.by("created").descending());
+        Pageable sortedByCreated = PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("created").descending());
         List<ItemRequest> requests = requestRepository.findAllByRequestor_IdNot(userId, sortedByCreated);
         return getRequestsWithItems(requests);
     }
@@ -94,7 +94,11 @@ public class RequestServiceImpl implements RequestService {
         Map<Long, List<ItemDto>> itemMap = itemDtoList.stream().collect(Collectors.groupingBy(ItemDto::getRequestId));
 
         return requestDtos.stream()
-                .peek(request -> request.getItems().addAll(itemMap.get(request.getId())))
+                .peek(request -> {
+                    if (itemMap.containsKey(request.getId())) {
+                        request.getItems().addAll(itemMap.get(request.getId()));
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }
