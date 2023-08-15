@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -169,19 +172,19 @@ class ItemUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () ->
-                itemService.searchItems(anyLong(), null));
-        verify(itemRepository, never()).searchItems(anyString());
+                itemService.searchItems(anyLong(), null, 0, 10));
+        verify(itemRepository, never()).searchItems(anyString(), any(Pageable.class));
     }
 
     @Test
     void searchItems_whenNoItemsFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
-        when(itemRepository.searchItems(anyString()))
+        when(itemRepository.searchItems(anyString(), any(Pageable.class)))
                 .thenReturn(Collections.emptyList());
 
-        List<ItemDto> items = itemService.searchItems(user.getId(), anyString());
-        verify(itemRepository, atMostOnce()).searchItems(anyString());
+        List<ItemDto> items = itemService.searchItems(user.getId(), anyString(), 0, 2);
+        verify(itemRepository, atMostOnce()).searchItems(anyString(), any(Pageable.class));
         assertNotNull(items);
         assertEquals(0, items.size());
     }
@@ -191,21 +194,21 @@ class ItemUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> itemService.getItems(anyLong()));
-        verify(itemRepository, never()).findAllByUserIdOrderById(anyLong());
+        assertThrows(UserNotFoundException.class, () -> itemService.getItems(anyLong(), 0, 2));
+        verify(itemRepository, never()).findAllByUserIdOrderById(anyLong(), any(Pageable.class));
     }
 
     @Test
     void getItems_whenNoItemsFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
-        when(itemRepository.findAllByUserIdOrderById(user.getId()))
+        when(itemRepository.findAllByUserIdOrderById(user.getId(), PageRequest.of(0, 2, Sort.by("id"))))
                 .thenReturn(Collections.emptyList());
 
-        List<ItemCommentBookingDto> items = itemService.getItems(user.getId());
+        List<ItemCommentBookingDto> items = itemService.getItems(user.getId(), 0, 2);
         assertNotNull(items);
         assertEquals(0, items.size());
-        verify(itemRepository, atMostOnce()).findAllByUserIdOrderById(user.getId());
+        verify(itemRepository, atMostOnce()).findAllByUserIdOrderById(user.getId(), PageRequest.of(0, 2, Sort.by("id")));
         verify(bookingRepository, never()).findLastBookingList(anySet(),
                 anyString(), any(LocalDateTime.class));
         verify(bookingRepository, never()).findNextBookingList(anySet(),
@@ -215,28 +218,31 @@ class ItemUnitTest {
     @Test
     void testItemMapper() {
         assertThrows(NullPointerException.class, () -> ItemMapper.toItemDto(null));
-        assertThrows(NullPointerException.class, () -> ItemMapper.toItemCommentBookingDto(null, null, null));
+        assertThrows(NullPointerException.class, () ->
+                ItemMapper.toItemCommentBookingDto(null, null, null, Collections.emptyList()));
 
         ItemDto withoutRequest = ItemMapper.toItemDto(item);
         assertNotNull(withoutRequest);
         assertNull(withoutRequest.getRequestId());
 
-        ItemCommentBookingDto noBookings = ItemMapper.toItemCommentBookingDto(item, null, null);
+        ItemCommentBookingDto noBookings = ItemMapper.toItemCommentBookingDto(item, null, null,
+                Collections.emptyList());
         assertNotNull(noBookings);
         assertEquals(item.getId(), noBookings.getId());
         assertEquals(item.getName(), noBookings.getName());
         assertNull(noBookings.getLastBooking());
         assertNull(noBookings.getNextBooking());
 
-        ItemCommentBookingDto withBookings = ItemMapper.toItemCommentBookingDto(item, nextBooking, lastBooking);
+        ItemCommentBookingDto withBookings = ItemMapper.toItemCommentBookingDto(item, nextBooking, lastBooking,
+                Collections.emptyList());
         assertNotNull(withBookings);
         assertNotNull(withBookings.getNextBooking());
         assertNotNull(withBookings.getLastBooking());
         assertEquals(nextBooking.getId(), withBookings.getNextBooking().getId());
         assertEquals(lastBooking.getId(), withBookings.getLastBooking().getId());
 
-        assertNotNull(ItemMapper.toItemCommentBookingDto(item, null, lastBooking));
-        assertNotNull(ItemMapper.toItemCommentBookingDto(item, nextBooking, null));
+        assertNotNull(ItemMapper.toItemCommentBookingDto(item, null, lastBooking, Collections.emptyList()));
+        assertNotNull(ItemMapper.toItemCommentBookingDto(item, nextBooking, null, Collections.emptyList()));
 
         item.setRequest(request);
         ItemDto withRequest = ItemMapper.toItemDto(item);
