@@ -21,14 +21,14 @@ public class UserController {
 
     @PostMapping
     public UserDto addUser(@Valid @RequestBody UserDto userDto) {
-        User user = userService.addUser(userDto);
+        UserDto user = userService.addUser(userDto);
         log.debug("Создан пользователь с id {} именем {}", user.getId(), user.getName());
-        return UserMapper.toUserDto(user);
+        return user;
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
-        return UserMapper.toUserDto(userService.updateUser(userDto, userId));
+        return userService.updateUser(userDto, userId);
     }
 
     @GetMapping

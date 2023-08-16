@@ -81,7 +81,7 @@ class IntegrationWithDBTest {
                 .name("Harry")
                 .email("user@user.com")
                 .build();
-        User user = userService.addUser(dtoInput); //ADD
+        UserDto user = userService.addUser(dtoInput); //ADD
 
         assertNotNull(user);
         assertEquals(1L, user.getId());
@@ -98,7 +98,7 @@ class IntegrationWithDBTest {
                 .name("Harry")
                 .build();
 
-        User updatedUser_WithName = userService.updateUser(updateUserDto_WithName, user.getId());
+        UserDto updatedUser_WithName = userService.updateUser(updateUserDto_WithName, user.getId());
         assertNotNull(updatedUser_WithName);
         assertEquals(1L, updatedUser_WithName.getId());
         assertEquals(updateUserDto_WithName.getName(), updatedUser_WithName.getName());
@@ -108,7 +108,7 @@ class IntegrationWithDBTest {
                 .email("harry@user.com")
                 .build();
 
-        User updatedUser_WithEmail = userService.updateUser(updateUserDto_WithEmail, user.getId());
+        UserDto updatedUser_WithEmail = userService.updateUser(updateUserDto_WithEmail, user.getId());
         assertNotNull(updatedUser_WithEmail);
         assertEquals(1L, updatedUser_WithEmail.getId());
         assertEquals(updatedUser_WithName.getName(), updatedUser_WithEmail.getName());
@@ -118,7 +118,7 @@ class IntegrationWithDBTest {
                 .name("Potter")
                 .email("harry@potter.com")
                 .build();
-        User updatedUser_Full = userService.updateUser(fullDto, user.getId());
+        UserDto updatedUser_Full = userService.updateUser(fullDto, user.getId());
         assertNotNull(updatedUser_Full);
         assertEquals(1L, updatedUser_Full.getId());
         assertEquals(fullDto.getName(), updatedUser_Full.getName());
@@ -132,7 +132,7 @@ class IntegrationWithDBTest {
                 .name("Winnie")
                 .email("winnie@pooh.com")
                 .build();
-        User user = userService.addUser(dto);
+        UserDto user = userService.addUser(dto);
         List<UserDto> users = userService.getUsers();
 
         assertNotNull(users);
