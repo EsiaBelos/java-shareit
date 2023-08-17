@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(long userId, ItemDto itemDto) {
         User owner = checkUser(userId);
         Item item = ItemMapper.toItem(itemDto);
-        if (itemDto.getRequestId() != null ) {
+        if (itemDto.getRequestId() != null) {
             ItemRequest request = requestRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
                     new RequestNotFoundException(String.format("Запрос не найден id = %d", itemDto.getRequestId())));
             item.setRequest(request);
@@ -122,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
         return itemList.stream().map(item ->
                         ItemMapper.toItemCommentBookingDto(item, nextBookingMap.get(item.getId()),
                                 lastBookingMap.get(item.getId()), ItemMapper.toCommentDtoList(commentsMap.get(item.getId()))))
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @Override

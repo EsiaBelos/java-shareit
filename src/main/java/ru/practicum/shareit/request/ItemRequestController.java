@@ -24,7 +24,7 @@ public class ItemRequestController {
         return requestService.addRequest(userId, requestDto);
     }
 
-//    получить список своих запросов вместе с данными об ответах на них
+    //    получить список своих запросов вместе с данными об ответах на них
     @GetMapping
     public List<OutRequestDto> getRequests(@RequestHeader("X-Sharer-User-Id") long userId) {
         return requestService.getRequestsByRequestor(userId);
@@ -32,7 +32,7 @@ public class ItemRequestController {
 
     // Посмотреть данные об отдельном запросе может любой пользователь.
     @GetMapping("/{requestId}")
-    public OutRequestDto getItemById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long requestId) {
+    public OutRequestDto getRequestById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long requestId) {
         return requestService.getRequestById(userId, requestId);
     }
 

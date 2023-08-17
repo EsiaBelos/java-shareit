@@ -90,8 +90,8 @@ class UserControllerTest {
                 .updateUser(any(UserDto.class), anyLong());
 
         mockMvc.perform(patch("/users/{userId}", 0)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(userDto)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isNotFound());
     }
 

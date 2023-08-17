@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Validated
 @ToString
+@Setter
 public class BookingDto {
     @NotNull
     private long itemId;

@@ -65,7 +65,7 @@ class RequestUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()->
+        assertThrows(UserNotFoundException.class, () ->
                 requestService.addRequest(anyLong(), null));
         verify(requestRepository, never()).save(request);
     }
@@ -75,7 +75,7 @@ class RequestUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()->
+        assertThrows(UserNotFoundException.class, () ->
                 requestService.getRequestsByRequestor(anyLong()));
         verify(requestRepository, never()).findAllByRequestor_IdOrderByCreatedDesc(anyLong());
     }
@@ -97,7 +97,7 @@ class RequestUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()->
+        assertThrows(UserNotFoundException.class, () ->
                 requestService.getRequestById(anyLong(), 1L));
         verify(requestRepository, never()).findById(anyLong());
     }
@@ -109,7 +109,7 @@ class RequestUnitTest {
         when(requestRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(RequestNotFoundException.class, ()->
+        assertThrows(RequestNotFoundException.class, () ->
                 requestService.getRequestById(user.getId(), anyLong()));
         verify(requestRepository, atMostOnce()).findById(anyLong());
     }
@@ -119,7 +119,7 @@ class RequestUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()->
+        assertThrows(UserNotFoundException.class, () ->
                 requestService.getAllRequests(anyLong(), 0, 10));
         verify(requestRepository, never()).findAllByRequestor_IdNot(anyLong(), any(Pageable.class));
     }

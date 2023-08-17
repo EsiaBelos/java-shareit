@@ -92,7 +92,7 @@ class ItemUnitTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, ()->
+        assertThrows(UserNotFoundException.class, () ->
                 itemService.addItem(anyLong(), null));
         verify(itemRepository, never()).save(item);
     }

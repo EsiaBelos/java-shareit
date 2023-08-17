@@ -2,6 +2,7 @@ package ru.practicum.shareit.restTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,7 +29,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.item.dto.ItemCommentBookingDto.*;
+import static ru.practicum.shareit.item.dto.ItemCommentBookingDto.ItemBooking;
+import static ru.practicum.shareit.item.dto.ItemCommentBookingDto.builder;
 
 @WebMvcTest(controllers = ItemController.class)
 class ItemControllerTest {
@@ -39,23 +41,30 @@ class ItemControllerTest {
     private ObjectMapper mapper;
     @MockBean
     private ItemService itemService;
-    private ItemDto itemDto = ItemDto.builder()
-            .id(1L)
-            .name("name")
-            .description("description")
-            .available(true)
-            .requestId(1L)
-            .build();
-    private ItemCommentBookingDto dto = builder()
-            .id(1L)
-            .name("item")
-            .description("withBookingsAndComments")
-            .available(true)
-            .lastBooking(new ItemBooking(1L, 1L))
-            .nextBooking(new ItemBooking(2L, 2L))
-            .build();
-    private CommentDto commentDto = new CommentDto(1L, "comment", LocalDateTime.now(),
-            "user");
+    private static ItemDto itemDto;
+    private static ItemCommentBookingDto dto;
+    private static CommentDto commentDto;
+
+    @BeforeAll
+    static void setUp() {
+        itemDto = ItemDto.builder()
+                .id(1L)
+                .name("name")
+                .description("description")
+                .available(true)
+                .requestId(1L)
+                .build();
+        dto = builder()
+                .id(1L)
+                .name("item")
+                .description("withBookingsAndComments")
+                .available(true)
+                .lastBooking(new ItemBooking(1L, 1L))
+                .nextBooking(new ItemBooking(2L, 2L))
+                .build();
+        commentDto = new CommentDto(1L, "comment", LocalDateTime.now(),
+                "user");
+    }
 
     @Test
     @SneakyThrows
