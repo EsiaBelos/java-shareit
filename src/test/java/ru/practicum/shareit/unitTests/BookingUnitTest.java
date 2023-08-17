@@ -93,7 +93,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void addBooking_WhenNoUserFound() {
+    void addBooking_whenNoUserFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -101,7 +101,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void addBooking_WhenNoItemFound() {
+    void addBooking_whenNoItemFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong()))
@@ -113,7 +113,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void addBooking_WhenUserIsAnOwner() {
+    void addBooking_whenUserIsAnOwner() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong()))
@@ -125,7 +125,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void addBooking_WhenItemNotAvailable() {
+    void addBooking_whenItemNotAvailable() {
         user.setId(2L);
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
@@ -138,7 +138,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void addBooking_WhenStartAfterEnd() {
+    void addBooking_whenStartAfterEnd() {
         user.setId(2L);
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
@@ -152,7 +152,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void updateBooking_WhenUserNotFound() {
+    void updateBooking_whenUserNotFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -162,7 +162,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void updateBooking_WhenBookingNotFound() {
+    void updateBooking_whenBookingNotFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findById(anyLong()))
@@ -174,7 +174,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void updateBooking_WhenNotWaitingStatus() {
+    void updateBooking_whenNotWaitingStatus() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
@@ -187,7 +187,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void updateBooking_WhenNotItemOwner() {
+    void updateBooking_whenNotItemOwner() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
@@ -262,7 +262,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void getBooking_WhenUserNotFound() {
+    void getBooking_whenUserNotFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -272,7 +272,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void getBooking_WhenBookingNotFound() {
+    void getBooking_whenBookingNotFound() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findById(anyLong()))
@@ -284,7 +284,7 @@ class BookingUnitTest {
     }
 
     @Test
-    void getBooking_WhenUserNeitherBookerNorOwner() {
+    void getBooking_whenUserNeitherBookerNorOwner() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findById(anyLong()))

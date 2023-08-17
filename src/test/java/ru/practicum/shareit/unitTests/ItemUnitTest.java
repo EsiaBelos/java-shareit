@@ -98,7 +98,7 @@ class ItemUnitTest {
     }
 
     @Test
-    void addComment_WhenNoValidBookingFound() { //findLastBookingByBooker(itemId, userId, LocalDateTime.now(), Status.APPROVED);
+    void addComment_whenNoValidBookingFound() { //findLastBookingByBooker(itemId, userId, LocalDateTime.now(), Status.APPROVED);
         when(bookingRepository.findLastBookingByBooker(anyLong(), anyLong(), any(LocalDateTime.class), any(Status.class)))
                 .thenReturn(Collections.emptyList());
 
@@ -108,7 +108,7 @@ class ItemUnitTest {
     }
 
     @Test
-    void updateItem_WhenNoItemFound() {
+    void updateItem_whenNoItemFound() {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 

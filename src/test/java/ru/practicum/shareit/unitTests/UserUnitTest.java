@@ -54,7 +54,7 @@ public class UserUnitTest {
     }
 
     @Test
-    public void getUserById_WhenUserNotFound() {
+    public void getUserById_whenUserNotFound() {
 
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
@@ -65,7 +65,7 @@ public class UserUnitTest {
     }
 
     @Test
-    public void updateUser_WhenUserNotFound() {
+    public void updateUser_whenUserNotFound() {
 
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))

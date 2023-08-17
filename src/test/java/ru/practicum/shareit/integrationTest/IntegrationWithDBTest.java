@@ -155,7 +155,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(4)
-    void addItem_WithoutRequest() {
+    void addItem_withoutRequest() {
         ItemDto savedItem = itemService.addItem(1L, itemDtoInput1);
 
         assertNotNull(savedItem);
@@ -168,7 +168,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(5)
-    void updateItem_WithoutRequest() {
+    void updateItem_withoutRequest() {
         itemDtoInput1.setName("Гарри Поттер и Философский камень");
         itemDtoInput1.setDescription("Книга про друзей");
 
@@ -226,7 +226,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(9)
-    void addItem_WithRequest() {
+    void addItem_withRequest() {
         Long requestId = 1L;
 
         itemDtoInput2.setRequestId(requestId);
@@ -327,7 +327,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(14)
-    void updateBooking_Approved() {
+    void updateBooking_approved() {
         long ownerId = userId2;
         long bookerId = userId1;
         long itemId = 2L;
@@ -345,7 +345,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(15)
-    void updateBooking_Rejected() {
+    void updateBooking_rejected() {
         long bookerId = userId2;
         long ownerId = userId1;
         long itemId = 1L;
@@ -482,7 +482,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(20)
-    void getItemById_ForOwner() {
+    void getItemById_forOwner() {
         long itemId = 2L;
         ItemCommentBookingDto item = itemService.getItemById(userId2, itemId);
 
@@ -501,7 +501,7 @@ class IntegrationWithDBTest {
 
     @Test
     @Order(21)
-    void getItemById_NotOwner() {
+    void getItemById_notOwner() {
         long itemId = 1L;
         ItemCommentBookingDto item = itemService.getItemById(userId2, itemId);
 
