@@ -96,35 +96,35 @@ class IntegrationWithDBTest {
         assertEquals(user.getName(), receivedUser.getName());
         assertEquals(user.getEmail(), receivedUser.getEmail());
 
-        UserDto updateUserDto_WithName = UserDto.builder()
+        UserDto updateUserDtoWithName = UserDto.builder()
                 .name("Harry")
                 .build();
 
-        UserDto updatedUser_WithName = userService.updateUser(updateUserDto_WithName, user.getId());
-        assertNotNull(updatedUser_WithName);
-        assertEquals(1L, updatedUser_WithName.getId());
-        assertEquals(updateUserDto_WithName.getName(), updatedUser_WithName.getName());
-        assertEquals(user.getEmail(), updatedUser_WithName.getEmail());
+        UserDto updatedUserWithName = userService.updateUser(updateUserDtoWithName, user.getId());
+        assertNotNull(updatedUserWithName);
+        assertEquals(1L, updatedUserWithName.getId());
+        assertEquals(updateUserDtoWithName.getName(), updatedUserWithName.getName());
+        assertEquals(user.getEmail(), updatedUserWithName.getEmail());
 
-        UserDto updateUserDto_WithEmail = UserDto.builder()
+        UserDto updateUserDtoWithEmail = UserDto.builder()
                 .email("harry@user.com")
                 .build();
 
-        UserDto updatedUser_WithEmail = userService.updateUser(updateUserDto_WithEmail, user.getId());
-        assertNotNull(updatedUser_WithEmail);
-        assertEquals(1L, updatedUser_WithEmail.getId());
-        assertEquals(updatedUser_WithName.getName(), updatedUser_WithEmail.getName());
-        assertEquals(updateUserDto_WithEmail.getEmail(), updatedUser_WithEmail.getEmail());
+        UserDto updatedUserWithEmail = userService.updateUser(updateUserDtoWithEmail, user.getId());
+        assertNotNull(updatedUserWithEmail);
+        assertEquals(1L, updatedUserWithEmail.getId());
+        assertEquals(updatedUserWithName.getName(), updatedUserWithEmail.getName());
+        assertEquals(updateUserDtoWithEmail.getEmail(), updatedUserWithEmail.getEmail());
 
         UserDto fullDto = UserDto.builder()
                 .name("Potter")
                 .email("harry@potter.com")
                 .build();
-        UserDto updatedUser_Full = userService.updateUser(fullDto, user.getId());
-        assertNotNull(updatedUser_Full);
-        assertEquals(1L, updatedUser_Full.getId());
-        assertEquals(fullDto.getName(), updatedUser_Full.getName());
-        assertEquals(fullDto.getEmail(), updatedUser_Full.getEmail());
+        UserDto updatedUserFull = userService.updateUser(fullDto, user.getId());
+        assertNotNull(updatedUserFull);
+        assertEquals(1L, updatedUserFull.getId());
+        assertEquals(fullDto.getName(), updatedUserFull.getName());
+        assertEquals(fullDto.getEmail(), updatedUserFull.getEmail());
     }
 
     @Test
