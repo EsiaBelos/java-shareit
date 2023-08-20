@@ -69,8 +69,7 @@ class BookingRepositoryJpaTest {
 
         List<Booking> currentBookings =
                 bookingRepository.findAllCurrent(booker.getId(),
-                        LocalDateTime.now(), LocalDateTime.now(),
-                        pageable);
+                        LocalDateTime.now(), pageable);
 
         assertEquals(1, currentBookings.size());
         assertEquals(booking.getStart(), currentBookings.get(0).getStart());

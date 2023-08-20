@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings.addAll(bookingRepository.findAllByBooker_Id(userId, sortedByStart));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findAllCurrent(userId, date, date, sortedByStart));
+                bookings.addAll(bookingRepository.findAllCurrent(userId, date, sortedByStart));
                 break;
             case PAST:
                 bookings.addAll(bookingRepository.findAllPast(userId, date, sortedByStart));

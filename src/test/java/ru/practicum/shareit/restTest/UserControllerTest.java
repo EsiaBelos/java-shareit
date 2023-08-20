@@ -66,7 +66,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
 
-        verify(userService, never()).updateUser(any(UserDto.class), anyLong());
+        verify(userService, never()).addUser(any(UserDto.class));
     }
 
     @Test

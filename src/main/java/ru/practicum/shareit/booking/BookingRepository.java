@@ -14,8 +14,8 @@ import java.util.Set;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
-            "and b.start < ?2 and b.end > ?3")
-    List<Booking> findAllCurrent(Long id, LocalDateTime now, LocalDateTime now1, Pageable pageable);
+            "and b.start < ?2 and b.end > ?2")
+    List<Booking> findAllCurrent(Long id, LocalDateTime now, Pageable pageable);
 
     List<Booking> findAllByBooker_Id(Long id, Pageable pageable);
 

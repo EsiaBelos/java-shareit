@@ -3,9 +3,9 @@ package ru.practicum.shareit.user.storage;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.exception.EmailException;
 import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -21,8 +21,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.storage.ItemUtil;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.RequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
