@@ -12,9 +12,9 @@ public interface BookingService {
     OutcomingBookingDto updateBooking(long userId, long bookingId, boolean available);
 
 
-    List<OutcomingBookingDto> getBookings(long userId, State state);
+    List<OutcomingBookingDto> getBookings(long userId, State state, Integer from, Integer size);
 
-    List<OutcomingBookingDto> getBookingsForOwnedItems(long userId, State state);
+    List<OutcomingBookingDto> getBookingsForOwnedItems(long userId, State state, Integer from, Integer size);
 
     OutcomingBookingDto getBooking(long userId, long bookingId);
 }
